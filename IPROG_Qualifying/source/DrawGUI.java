@@ -10,11 +10,11 @@ public class DrawGUI extends JFrame {
 	private static final int DEFAULT_HEIGHT = 1000;
 	private static final String PROGRAM_NAME = "Draw Client";
 	
-	private DrawClient client;
+	private Client client;
 	
 	private JPanel drawPanel = new JPanel();
 	
-	public DrawGUI(DrawClient client) {
+	public DrawGUI(Client client) {
 		super(PROGRAM_NAME);
 		this.client = client;
 
