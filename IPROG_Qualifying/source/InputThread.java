@@ -19,6 +19,7 @@ public class InputThread extends Thread {
 			try {
 				if (socket.getInputStream().available() != 0) {
 					ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+					//2 seperate storage objects, one for text and one for drawing.
 					Storage storage = (Storage) in.readObject();
 				}
 			} catch (ClassNotFoundException e) {
