@@ -17,7 +17,8 @@ public class OutputThread extends Thread {
 			BufferedOutputStream buffer = new BufferedOutputStream(socket.getOutputStream());
 			ObjectOutputStream output = new ObjectOutputStream(buffer);
 			while (alive) {
-				Storage storage = new Storage(bytes);
+				Storage storage = new Storage(data);
+				output.writeObject(storage);
 				output.reset();
 				output.flush();
 				Thread.sleep(50);
