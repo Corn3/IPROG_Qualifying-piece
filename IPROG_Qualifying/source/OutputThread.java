@@ -20,7 +20,7 @@ public class OutputThread extends Thread {
 			BufferedOutputStream buffer = new BufferedOutputStream(socket.getOutputStream());
 			ObjectOutputStream output = new ObjectOutputStream(buffer);
 			while (alive) {
-				while (!data.equals(null)) {
+				if (data != null) {
 					// 2 seperate storage objects, one for text and one for drawing.
 					Storage storage = new Storage(data);
 					output.writeObject(storage);

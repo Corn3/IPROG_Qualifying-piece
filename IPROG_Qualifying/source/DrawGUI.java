@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -40,7 +41,11 @@ public class DrawGUI extends JFrame {
 			int y = me.getY();
 			PointComponent pointComp = new PointComponent(x, y);
 			drawPoint(pointComp);
-			client.sendPoint(pointComp);
+			try {
+				client.sendPoint(pointComp);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
