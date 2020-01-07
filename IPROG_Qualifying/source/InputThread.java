@@ -23,12 +23,12 @@ public class InputThread extends Thread {
 					Storage storage = (Storage) in.readObject();
 					byte[] data = storage.getData();
 					Object o = convertToObject(data);
-					if(o.equals(null)) {
-						System.out.println("BAD");
+					if (o.equals(null)) {
+
 					} else if (o instanceof Pixel) {
-						Pixel pixel = (Pixel)o;
+						Pixel pixel = (Pixel) o;
 					} else if (o instanceof String) {
-						String s = (String)o;
+						String s = (String) o;
 					}
 					// 2 seperate storage objects, one for text and one for drawing.
 				}
@@ -43,8 +43,7 @@ public class InputThread extends Thread {
 	private Object convertToObject(byte[] data) throws IOException, ClassNotFoundException {
 		Object o = null;
 		try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
-			ObjectInputStream ois = new ObjectInputStream(bis);
-		) {
+				ObjectInputStream ois = new ObjectInputStream(bis);) {
 			o = ois.readObject();
 		}
 		return o;
