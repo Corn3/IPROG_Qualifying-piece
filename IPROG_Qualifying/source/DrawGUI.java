@@ -40,13 +40,8 @@ public class DrawGUI extends JFrame {
 	 * @param point the Point containing coordinates to be
 	 * painted on screen.
 	 */
-	public void drawPoint(Point point) {
-		int x = (int)point.getX();
-		int y = (int)point.getY();
-		PointComponent pointComp = new PointComponent(x, y);
-		drawPanel.add(pointComp);
-		pointComp.repaint();
-		pointComp.validate();
+	public void drawPoint(PointComponent point) {
+		addPointToScreen(point);
 	}
 	
 	public class MouseListener extends MouseAdapter {
@@ -56,10 +51,15 @@ public class DrawGUI extends JFrame {
 			int x = me.getX();
 			int y = me.getY();
 			PointComponent pointComp = new PointComponent(x, y);
-			drawPanel.add(pointComp);
-			pointComp.repaint();
-			client.sendPoint(new Point(x, y));
+			addPointToScreen(pointComp);
+			client.sendPoint(pointComp);
 		}
+	}
+	
+	private void addPointToScreen(PointComponent pointComp) {
+		drawPanel.add(pointComp);
+		pointComp.repaint();
+		pointComp.validate();
 	}
 	
 }

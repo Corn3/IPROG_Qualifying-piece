@@ -27,4 +27,12 @@ public class Client {
 
 		new Client().run(host, port);
 	}
+	
+	public void convertData(Object object) {
+		if(object instanceof PointComponent) {
+			
+		} else if(object instanceof String) {
+			String s = (String)object;
+		}
+	}
 }

@@ -25,10 +25,8 @@ public class InputThread extends Thread {
 					Object o = convertToObject(data);
 					if (o.equals(null)) {
 
-					} else if (o instanceof Pixel) {
-						PointComponent point = (PointComponent) o;
-					} else if (o instanceof String) {
-						String s = (String) o;
+					} else {
+						client.convertData(o);
 					}
 					// 2 seperate storage objects, one for text and one for drawing.
 				}
