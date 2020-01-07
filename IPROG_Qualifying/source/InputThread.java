@@ -26,7 +26,7 @@ public class InputThread extends Thread {
 					if (o.equals(null)) {
 
 					} else if (o instanceof Pixel) {
-						Pixel pixel = (Pixel) o;
+						PointComponent point = (PointComponent) o;
 					} else if (o instanceof String) {
 						String s = (String) o;
 					}
