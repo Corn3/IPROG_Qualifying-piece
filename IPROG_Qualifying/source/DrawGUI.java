@@ -32,18 +32,6 @@ public class DrawGUI extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
-	/**
-	 * Paints the point on the given coordinates from
-	 * point. Converts the coordinates from a double to an
-	 * int that is used to create a component.
-	 * 
-	 * @param point the Point containing coordinates to be
-	 * painted on screen.
-	 */
-	public void drawPoint(PointComponent point) {
-		addPointToScreen(point);
-	}
-	
 	public class MouseListener extends MouseAdapter {
 		
 		@Override
@@ -51,12 +39,12 @@ public class DrawGUI extends JFrame {
 			int x = me.getX();
 			int y = me.getY();
 			PointComponent pointComp = new PointComponent(x, y);
-			addPointToScreen(pointComp);
+			drawPoint(pointComp);
 			client.sendPoint(pointComp);
 		}
 	}
 	
-	private void addPointToScreen(PointComponent pointComp) {
+	private void drawPoint(PointComponent pointComp) {
 		drawPanel.add(pointComp);
 		pointComp.repaint();
 		pointComp.validate();

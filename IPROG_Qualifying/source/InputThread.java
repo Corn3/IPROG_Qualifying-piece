@@ -7,9 +7,11 @@ public class InputThread extends Thread {
 
 	private Boolean alive;
 	private Socket socket;
+	private Client client;
 
-	public InputThread(Socket socket) {
+	public InputThread(Socket socket, Client client) {
 		this.socket = socket;
+		this.client = client;
 		alive = true;
 		start();
 	}

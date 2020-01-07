@@ -30,9 +30,14 @@ public class Client {
 	
 	public void convertData(Object object) {
 		if(object instanceof PointComponent) {
+			PointComponent point = (PointComponent)object;
 			
 		} else if(object instanceof String) {
 			String s = (String)object;
 		}
+	}
+	
+	public void sendPoint(PointComponent point) {
+		System.out.println("Test");
 	}
 }
