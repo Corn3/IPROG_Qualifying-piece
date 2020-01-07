@@ -49,7 +49,7 @@ public class DrawGUI extends JFrame {
 		}
 	}
 	
-	private void drawPoint(PointComponent pointComp) {
+	public void drawPoint(PointComponent pointComp) {
 		drawPanel.add(pointComp);
 		pointComp.repaint();
 		pointComp.validate();

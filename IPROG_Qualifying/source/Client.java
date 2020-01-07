@@ -35,7 +35,7 @@ public class Client {
 	public void convertData(Object object) {
 		if(object instanceof PointComponent) {
 			PointComponent point = (PointComponent)object;
-			
+			gui.drawPoint(point);
 		} else if(object instanceof String) {
 			String s = (String)object;
 		}

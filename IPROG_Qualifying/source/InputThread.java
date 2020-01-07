@@ -25,12 +25,9 @@ public class InputThread extends Thread {
 					Storage storage = (Storage) in.readObject();
 					byte[] data = storage.getData();
 					Object o = convertToObject(data);
-					if (o.equals(null)) {
-
-					} else {
+					if (!o.equals(null)) {
 						client.convertData(o);
 					}
-					// 2 seperate storage objects, one for text and one for drawing.
 				}
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
