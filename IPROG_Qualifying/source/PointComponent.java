@@ -46,12 +46,13 @@ public class PointComponent extends JComponent {
 	}
 	
 	public PointComponent(int x, int y, Color color, int size) {
-		this.x = x;
-		this.y = y;
+		this.x = x - (size / 2);
+		this.y = y - (size / 2);
 		this.color = color;
 		this.height = size;
 		this.width = size;
-		setBounds(x - 5, y - 5, size, size);
+		int halfSize = size / 2;
+		setBounds(x - halfSize, y - halfSize, size, size);
 		setPreferredSize(new Dimension(size, size));
 	}
 	

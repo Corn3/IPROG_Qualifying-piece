@@ -36,16 +36,23 @@ public class Client {
 		if(object instanceof PointComponent) {
 			PointComponent point = (PointComponent)object;
 			gui.drawPoint(point);
-		} else if(object instanceof String) {
-			String s = (String)object;
 		}
 	}
+	
+	public void addMessage(String message) {
+		gui.addChatMessage(message);
+	}
+	
 	
 	public void sendPoint(PointComponent point) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(out);
 		oos.writeObject(point);
 		sendData(out.toByteArray());
+	}
+	
+	public void sendMessage(String message) {
+		sendData(message.getBytes());
 	}
 	
 	private void sendData(byte[] data) {
