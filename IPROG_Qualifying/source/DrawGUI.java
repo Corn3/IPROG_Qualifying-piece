@@ -183,8 +183,6 @@ public class DrawGUI extends JFrame {
 		colorPanel.add(colorButtons[i]);
 	}
 
-	
-
 	public void drawPoint(Point point) {
 		PointComponent pointComp = new PointComponent(point.getX(), point.getY(), point.getColor(), point.getHeight());
 		drawPanel.add(pointComp);
