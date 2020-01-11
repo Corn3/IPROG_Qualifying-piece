@@ -185,7 +185,8 @@ public class DrawGUI extends JFrame {
 
 	
 
-	public void drawPoint(PointComponent pointComp) {
+	public void drawPoint(Point point) {
+		PointComponent pointComp = new PointComponent(point.getX(), point.getY(), point.getColor(), point.getHeight());
 		drawPanel.add(pointComp);
 		pointComp.repaint();
 		pointComp.validate();
@@ -232,9 +233,9 @@ public class DrawGUI extends JFrame {
 
 		@Override
 		public void mouseClicked(MouseEvent me) {
-			PointComponent pointComp = createPointComponent(me);
+			Point point = createPoint(me);
 			try {
-				client.sendPoint(pointComp);
+				client.sendPoint(point);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -242,20 +243,20 @@ public class DrawGUI extends JFrame {
 
 		@Override
 		public void mouseDragged(MouseEvent me) {
-			PointComponent pointComp = createPointComponent(me);
+			Point point = createPoint(me);
 			try {
-				client.sendPoint(pointComp);
+				client.sendPoint(point);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
-		private PointComponent createPointComponent(MouseEvent me) {
+		private Point createPoint(MouseEvent me) {
 			int x = me.getX();
 			int y = me.getY();
-			PointComponent pointComp = new PointComponent(x, y, paintColor, size);
-			drawPoint(pointComp);
-			return pointComp;
+			Point point = new Point(x, y, paintColor, size);
+			drawPoint(point);
+			return point;
 		}
 	}
 

@@ -11,11 +11,12 @@ public class Client {
 	private DrawGUI gui;
 
 	private void run(String host, int port) {
-		try(Socket socket = new Socket(host, port)) {
+		try (Socket socket = new Socket(host, port)) {
 			gui = new DrawGUI(this);
 			output = new OutputThread(socket);
 			input = new InputThread(socket, this);
-			while (true) {}
+			while (true) {
+			}
 		} catch (IOException ioe) {
 			System.err.println("Couldn't connect to the specified socket.");
 		}
@@ -31,30 +32,26 @@ public class Client {
 
 		new Client().run(host, port);
 	}
-	
-	public void convertData(Object object) {
-		if(object instanceof PointComponent) {
-			PointComponent point = (PointComponent)object;
-			gui.drawPoint(point);
-		}
+
+	public void convertData(Point point) {
+		gui.drawPoint(point);
 	}
-	
+
 	public void addMessage(String message) {
 		gui.addChatMessage(message);
 	}
-	
-	
-	public void sendPoint(PointComponent point) throws IOException {
+
+	public void sendPoint(Point point) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(out);
 		oos.writeObject(point);
 		sendData(out.toByteArray());
 	}
-	
+
 	public void sendMessage(String message) {
 		sendData(message.getBytes());
 	}
-	
+
 	private void sendData(byte[] data) {
 		output.sendData(data);
 	}

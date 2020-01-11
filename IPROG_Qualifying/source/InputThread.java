@@ -25,12 +25,12 @@ public class InputThread extends Thread {
 					Storage storage = (Storage) in.readObject();
 					byte[] data = storage.getData();
 					
-					Object o = convertToObject(data);
-					if(o == null) {
+					Point point = convertToPoint(data);
+					if(point == null) {
 						String message = new String(data);
 						client.addMessage(message);
 					} else {
-						client.convertData(o);
+						client.convertData(point);
 					}
 				}
 			} catch (ClassNotFoundException e) {
@@ -41,14 +41,14 @@ public class InputThread extends Thread {
 		}
 	}
 
-	private Object convertToObject(byte[] data) throws IOException, ClassNotFoundException {
-		Object o = null;
+	private Point convertToPoint(byte[] data) throws IOException, ClassNotFoundException {
+		Point point = null;
 		try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
 				ObjectInputStream ois = new ObjectInputStream(bis);) {
-			o = ois.readObject();
+			point = (Point)ois.readObject();
 		} catch(java.io.EOFException eof) {
-			return o;
+			return point;
 		}
-		return o;
+		return point;
 	}
 }
