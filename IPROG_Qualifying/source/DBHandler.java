@@ -99,5 +99,13 @@ public class DBHandler {
 		return false;
 		
 	}
+	
+	public void changeLogin(boolean loggedIn) {
+		try {
+			stmt.executeQuery(sqlHandler.setLoggedIn(loggedIn));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

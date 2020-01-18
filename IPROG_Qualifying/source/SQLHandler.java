@@ -23,5 +23,12 @@ public class SQLHandler {
 				"WHERE user_name = '" + userName + "'";
 		return record;
 	}
+	
+	public String setLoggedIn(boolean loggedIn) {
+		String record = 
+				"UPDATE userInformation "
+				+ "set user_logged_in = " + loggedIn;
+		return record;
+	}
 
 }

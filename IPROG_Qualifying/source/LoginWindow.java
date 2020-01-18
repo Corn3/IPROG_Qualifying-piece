@@ -7,6 +7,8 @@ public class LoginWindow extends JFrame {
 	private LoginForm lf;
 	private UserForm uf;
 	private boolean loggedIn = false;
+
+	private DBHandler dbHandler = new DBHandler();
 	
 	public LoginWindow() {
 		super("Login");
@@ -31,6 +33,7 @@ public class LoginWindow extends JFrame {
 	
 	public void setLoggedIn(boolean loggedIn) {
 		this.loggedIn = loggedIn;
+		dbHandler.changeLogin(true);
 	}
 	
 	public String getUserName() {
