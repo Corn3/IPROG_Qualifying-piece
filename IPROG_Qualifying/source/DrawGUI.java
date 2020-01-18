@@ -1,6 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -18,17 +22,21 @@ public class DrawGUI extends JFrame {
 	private static final int CHAT_AREA_HEIGHT = (CHAT_PANEL_HEIGHT / 2) + (CHAT_PANEL_HEIGHT / 3);
 	private static final int MAX_SLIDER = 200;
 	private static final int MIN_SLIDER = 5;
+	private static final int MAX_DATA_SIZE = 10;
+	
+	private String userName;
 	
 	private Color[] colors = new Color[13];
 	private JButton[] colorButtons = new JButton[13];
+	private CopyOnWriteArrayList<Point> points = new CopyOnWriteArrayList<Point>();
+	
 	private Color paintColor = Color.BLUE;
 
 	private Client client;
 	
 	private JLabel currentColorText = new JLabel("Current color: ");
 	private JLabel currentPointSizeText = new JLabel("" + MIN_SLIDER);
-
-	private JPanel drawPanel = new JPanel();
+	private JLayeredPane drawPanel = new JLayeredPane();
 	private JPanel chatPanel = new JPanel();
 	private JPanel utilPanel = new JPanel();
 	private JPanel sizePanel = new JPanel();
@@ -40,8 +48,9 @@ public class DrawGUI extends JFrame {
 	private JTextArea chatArea = new JTextArea();
 	private JTextField chatField = new JTextField();
 
-	public DrawGUI(Client client) {
+	public DrawGUI(String userName, Client client) {
 		super(PROGRAM_NAME);
+		this.userName = userName;
 		this.client = client;
 		this.getRootPane().setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.blue));
 		
@@ -85,8 +94,10 @@ public class DrawGUI extends JFrame {
 	private void addDrawArea() {
 		MouseListener me = new MouseListener();
 		drawPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
+		drawPanel.setOpaque(true);
 		drawPanel.setBackground(Color.WHITE);
 		drawPanel.setLayout(null);
+		drawPanel.addMouseListener(me);
 		drawPanel.addMouseMotionListener(me);
 		JScrollPane scroll = new JScrollPane(drawPanel);
 		this.add(scroll);
@@ -99,7 +110,8 @@ public class DrawGUI extends JFrame {
 		chatArea.setPreferredSize(new Dimension(DEFAULT_WIDTH, CHAT_AREA_HEIGHT));
 		chatArea.setEditable(false);
 		chatField.addKeyListener(new ChatListener());
-		chatPanel.add(chatArea);
+		JScrollPane scroll = new JScrollPane(chatArea);
+		chatPanel.add(scroll);
 		chatPanel.add(chatField);
 	}
 
@@ -185,7 +197,11 @@ public class DrawGUI extends JFrame {
 
 	public void drawPoint(Point point) {
 		PointComponent pointComp = new PointComponent(point.getX(), point.getY(), point.getColor(), point.getHeight());
-		drawPanel.add(pointComp);
+		if(drawPanel.getComponentAt(point.getX(), point.getY()) != null) {
+			drawPanel.add(pointComp, 1);
+		}
+		else
+			drawPanel.add(pointComp, 0);
 		pointComp.repaint();
 		pointComp.validate();
 	}
@@ -219,6 +235,11 @@ public class DrawGUI extends JFrame {
 		public void keyPressed(KeyEvent kev) {
 			if(kev.getKeyCode() == KeyEvent.VK_ENTER) {
 				String message = chatField.getText();
+				if(message.equals(""))
+					return;
+				else
+					message = userName + ": " + message;
+					
 				addChatMessage(message);
 				chatField.setText("");
 				client.sendMessage(message);
@@ -232,8 +253,9 @@ public class DrawGUI extends JFrame {
 		@Override
 		public void mouseClicked(MouseEvent me) {
 			Point point = createPoint(me);
+			points.add(point);
 			try {
-				client.sendPoint(point);
+				client.sendPoint(points);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -242,8 +264,21 @@ public class DrawGUI extends JFrame {
 		@Override
 		public void mouseDragged(MouseEvent me) {
 			Point point = createPoint(me);
+			points.add(point);
 			try {
-				client.sendPoint(point);
+				if(points.size() == MAX_DATA_SIZE) {
+					client.sendPoint(points);
+					points.clear();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent me) {
+			try {
+				client.sendPoint(points);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

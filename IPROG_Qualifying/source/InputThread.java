@@ -2,6 +2,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InputThread extends Thread {
 
@@ -24,13 +26,12 @@ public class InputThread extends Thread {
 					ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 					Storage storage = (Storage) in.readObject();
 					byte[] data = storage.getData();
-					
-					Point point = convertToPoint(data);
-					if(point == null) {
+					CopyOnWriteArrayList<Point> points = convertToPoints(data);
+					if(points == null) {
 						String message = new String(data);
 						client.addMessage(message);
 					} else {
-						client.convertData(point);
+						client.convertData(points);
 					}
 				}
 			} catch (ClassNotFoundException e) {
@@ -41,14 +42,17 @@ public class InputThread extends Thread {
 		}
 	}
 
-	private Point convertToPoint(byte[] data) throws IOException, ClassNotFoundException {
-		Point point = null;
+	private CopyOnWriteArrayList convertToPoints(byte[] data) throws IOException, ClassNotFoundException {
+		CopyOnWriteArrayList<Point> points = null;
 		try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
 				ObjectInputStream ois = new ObjectInputStream(bis);) {
-			point = (Point)ois.readObject();
-		} catch(java.io.EOFException eof) {
-			return point;
+			points = (CopyOnWriteArrayList)ois.readObject();
+		} catch(java.io.StreamCorruptedException sce) {
+			return null;
 		}
-		return point;
+		catch(java.io.EOFException eof) {
+			return null;
+		}
+		return points;
 	}
 }

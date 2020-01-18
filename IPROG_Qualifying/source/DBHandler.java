@@ -31,6 +31,24 @@ public class DBHandler {
 		}
 		return exists;
 	}
+	
+	/**
+	 * Creates a new index for the user entry in the database, by executing
+	 * the SQL command returned from the Database handler.
+	 * <p>
+	 * If the command succeeds a index String is returned, if unsuccessful
+	 * this method throws a SQLException.
+	 * 
+	 * @return a String representing the user id for the database
+	 * @throws SQLException is thrown if it fails to execute the given
+	 * index query.
+	 */
+	private String getNewId() throws SQLException {
+		ResultSet rs = (ResultSet) stmt.executeQuery(sqlHandler.newIndex());
+		rs.next();
+		return rs.getString(1);
+		
+	}
 
 	/**
 	 * Establishes a connection to the given database by first getting the name and
@@ -60,7 +78,7 @@ public class DBHandler {
 	
 	private void addEntryToDB(String userName) {
 		try {
-			stmt.executeUpdate(sqlHandler.insertIntoDB(userName));
+			stmt.executeUpdate(sqlHandler.insertIntoDB(userName, getNewId()));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

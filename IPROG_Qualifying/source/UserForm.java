@@ -9,8 +9,12 @@ public class UserForm extends JPanel {
 	private JTextField userField = new JTextField(20);
 	private JPanel[] rows = new JPanel[2];
 	private JPanel cards;
+	private DBHandler dbHandler = new DBHandler();
+	private boolean exists = true;
+	private LoginWindow loginWindow;
 
-	public UserForm(JPanel cards) {
+	public UserForm(JPanel cards, LoginWindow loginWindow) {
+		this.loginWindow = loginWindow;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.cards = cards;
 
@@ -23,7 +27,7 @@ public class UserForm extends JPanel {
 		add(rows[0]);
 
 		JButton createButton = new JButton("Create User");
-		JButton previousButton = new JButton("Login");
+		JButton previousButton = new JButton("<--");
 		rows[1].add(createButton);
 		rows[1].add(previousButton);
 		add(rows[1]);
@@ -34,34 +38,40 @@ public class UserForm extends JPanel {
 	public String getUserName() {
 		return userField.getText();
 	}
+	
+	public boolean getExists() {
+		return exists;
+	}
 
 	private class PreviousListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			CardLayout cl = (CardLayout) (cards.getLayout());
+			userField.setText("");
 			cl.previous(cards);
 		}
 	}
-	
+
 	private class CreateListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
-			if(userField.getText() != "") {
-				String name = getUserName();
-			}
-			else {
-				//Error message: empty userName.
+			String name = null;
+			if (userField.getText() == "") {
+				JOptionPane.showMessageDialog(UserForm.this, "The entered userName can't be empty.", "Empty username",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			} else {
+				name = getUserName();
 			}
 
-			//Check database for name.
-			//if name does exist
-			if(0 == 1) {
-				//Error message: Name exists already.
+			exists = dbHandler.checkAvailability(false, name);
+			if (exists == true) {
+				JOptionPane.showMessageDialog(UserForm.this, "The entered username already exist.", "Username exist",
+						JOptionPane.ERROR_MESSAGE);
+			} else {
+				loginWindow.setLoggedIn(true);
 			}
-			else {
-				//Create new user and login.
-			}
-				
+
 		}
 	}
 

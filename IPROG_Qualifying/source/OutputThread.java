@@ -1,11 +1,13 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class OutputThread extends Thread {
 
 	private boolean alive, awake;
 	private Socket socket;
-	private byte[] data;
+	private byte[] data = null;
 
 	public OutputThread(Socket socket) {
 		this.socket = socket;
