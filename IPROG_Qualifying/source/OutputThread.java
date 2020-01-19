@@ -17,6 +17,16 @@ public class OutputThread extends Thread {
 		start();
 	}
 
+	/**
+	 * Overrides the superclass Threads run method. Runs this thread and waits
+	 * for data to be available from this users client.
+	 * <p>
+	 * This method opens a new ObjectOutputStream and converts the data into a
+	 * Storage object or a boolean to be sent to the server. When the data has been sent this
+	 * method resets the data variables.
+	 * 
+	 * @see Thread
+	 */
 	@Override
 	public void run() {
 		try {
@@ -46,6 +56,14 @@ public class OutputThread extends Thread {
 		}
 	}
 	
+	/**
+	 * Passes the retrieved data to this thread for sending
+	 * purposes.
+	 * 
+	 * @param clear the boolean value indicating if screen
+	 * data should be cleared.
+	 * @param data the data to be sent.
+	 */
 	public void sendData(boolean clear, byte[] data) {
 		this.clear = clear;
 		this.data = data;

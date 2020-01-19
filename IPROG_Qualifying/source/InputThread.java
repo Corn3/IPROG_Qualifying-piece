@@ -18,6 +18,17 @@ public class InputThread extends Thread {
 		start();
 	}
 
+	/**
+	 * Overrides the superclass Threads run method. Runs this thread and then
+	 * constantly listens for data from the connected server. When data is available
+	 * this method opens a new ObjectInputStream and converts the data into a
+	 * Storage object.
+	 * <p>
+	 * Depending on if the data recieved is a boolean, a text message or a Point object
+	 * the data is passed on to the client in all cases to different methods.
+	 * 
+	 * @see Thread
+	 */
 	@Override
 	public void run() {
 		while (alive) {
@@ -49,6 +60,16 @@ public class InputThread extends Thread {
 		}
 	}
 
+	/**
+	 * Tries to convert the given data into a Point object.
+	 * <p>
+	 * If any error occurs then the data is of type String and null is returned instead.
+	 * 
+	 * @param data the bytes to be converted.
+	 * @return a Point object
+	 * @throws IOException if the streams are unable to be created.
+	 * @throws ClassNotFoundException if the given class doesn't exists.
+	 */
 	private CopyOnWriteArrayList convertToPoints(byte[] data) throws IOException, ClassNotFoundException {
 		CopyOnWriteArrayList<Point> points = null;
 		try (ByteArrayInputStream bis = new ByteArrayInputStream(data);

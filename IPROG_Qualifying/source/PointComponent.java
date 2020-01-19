@@ -56,6 +56,11 @@ public class PointComponent extends JComponent {
 		setPreferredSize(new Dimension(size, size));
 	}
 	
+	/**
+	 * Overrides the super methods paintComponent
+	 * and defines the default behavior a new component
+	 * should follow when created.
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
