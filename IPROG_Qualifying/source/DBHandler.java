@@ -15,39 +15,53 @@ public class DBHandler {
 	private SQLHandler sqlHandler = new SQLHandler();
 	private Connection dbConnection;
 	private Statement stmt = null;
-	
-	public boolean checkAvailability(boolean checkOnly, String userName) {
+
+	public boolean checkAvailability(boolean checkOnly, String userName, String userPassword) {
 		try {
 			connectToDB();
-			stmt = (Statement) dbConnection.createStatement();
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		boolean exists = checkEntryFromDB(userName);
-		
-		if(checkOnly == false && exists == false) {
-			addEntryToDB(userName);
+
+		if (checkOnly == false && exists == false) {
+			addEntryToDB(userName, userPassword);
 		}
 		return exists;
 	}
-	
+
+	public boolean checkPassword(String userName, String password) {
+		ResultSet rs;
+		try {
+			rs = (ResultSet) stmt.executeQuery(sqlHandler.checkForCorrectPassword(userName, password));
+			if (rs.next())
+				return true;
+			else
+				return false;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 	/**
-	 * Creates a new index for the user entry in the database, by executing
-	 * the SQL command returned from the Database handler.
+	 * Creates a new index for the user entry in the database, by executing the SQL
+	 * command returned from the Database handler.
 	 * <p>
-	 * If the command succeeds a index String is returned, if unsuccessful
-	 * this method throws a SQLException.
+	 * If the command succeeds a index String is returned, if unsuccessful this
+	 * method throws a SQLException.
 	 * 
 	 * @return a String representing the user id for the database
-	 * @throws SQLException is thrown if it fails to execute the given
-	 * index query.
+	 * @throws SQLException
+	 *             is thrown if it fails to execute the given index query.
 	 */
 	private String getNewId() throws SQLException {
 		ResultSet rs = (ResultSet) stmt.executeQuery(sqlHandler.newIndex());
 		rs.next();
 		return rs.getString(1);
-		
+
 	}
 
 	/**
@@ -74,36 +88,45 @@ public class DBHandler {
 		String db_name = DEFAULT_DB;
 		String url = "jdbc:mysql://" + computer + "/" + db_name;
 		dbConnection = (Connection) DriverManager.getConnection(url, USR_NAME, USR_PWD);
+		stmt = (Statement) dbConnection.createStatement();
 	}
-	
-	private void addEntryToDB(String userName) {
+
+	private void addEntryToDB(String userName, String userPassword) {
 		try {
-			stmt.executeUpdate(sqlHandler.insertIntoDB(userName, getNewId()));
+			stmt.executeUpdate(sqlHandler.insertIntoDB(userName, userPassword, getNewId()));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	private boolean checkEntryFromDB(String userName) {
 		try {
 			ResultSet rs = (ResultSet) stmt.executeQuery(sqlHandler.checkForUserName(userName));
-			if(rs.next())
+			if (rs.next())
 				return true;
 			else
 				return false;
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
-		
+
 	}
-	
-	public void changeLogin(boolean loggedIn) {
+
+	public void changeLogin(boolean loggedIn, String userName) {
 		try {
-			stmt.executeQuery(sqlHandler.setLoggedIn(loggedIn));
+			if (stmt == null)
+				connectToDB();
+			stmt.executeUpdate(sqlHandler.setLoggedIn(loggedIn, userName));
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}

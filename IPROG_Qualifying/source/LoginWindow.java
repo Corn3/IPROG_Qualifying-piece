@@ -33,7 +33,6 @@ public class LoginWindow extends JFrame {
 	
 	public void setLoggedIn(boolean loggedIn) {
 		this.loggedIn = loggedIn;
-		dbHandler.changeLogin(true);
 	}
 	
 	public String getUserName() {

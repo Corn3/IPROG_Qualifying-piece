@@ -24,14 +24,21 @@ public class InputThread extends Thread {
 			try {
 				if (socket.getInputStream().available() != 0) {
 					ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-					Storage storage = (Storage) in.readObject();
-					byte[] data = storage.getData();
-					CopyOnWriteArrayList<Point> points = convertToPoints(data);
-					if(points == null) {
-						String message = new String(data);
-						client.addMessage(message);
+					Object o = in.readObject();
+					if (o instanceof Storage) {
+						Storage storage = (Storage)o;
+						byte[] data = storage.getData();
+						CopyOnWriteArrayList<Point> points = convertToPoints(data);
+						
+						if (points != null) {
+							client.convertData(points);
+						} else {
+							String message = new String(data);
+							client.addMessage(message);
+						}
 					} else {
-						client.convertData(points);
+						boolean clear = (boolean)o;
+						client.clearScreenData(clear);
 					}
 				}
 			} catch (ClassNotFoundException e) {
@@ -46,11 +53,10 @@ public class InputThread extends Thread {
 		CopyOnWriteArrayList<Point> points = null;
 		try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
 				ObjectInputStream ois = new ObjectInputStream(bis);) {
-			points = (CopyOnWriteArrayList)ois.readObject();
-		} catch(java.io.StreamCorruptedException sce) {
+			points = (CopyOnWriteArrayList) ois.readObject();
+		} catch (java.io.StreamCorruptedException sce) {
 			return null;
-		}
-		catch(java.io.EOFException eof) {
+		} catch (java.io.EOFException eof) {
 			return null;
 		}
 		return points;

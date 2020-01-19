@@ -23,17 +23,18 @@ public class DrawGUI extends JFrame {
 	private static final int MAX_SLIDER = 200;
 	private static final int MIN_SLIDER = 5;
 	private static final int MAX_DATA_SIZE = 10;
-	
+
 	private String userName;
-	
+
 	private Color[] colors = new Color[13];
 	private JButton[] colorButtons = new JButton[13];
 	private CopyOnWriteArrayList<Point> points = new CopyOnWriteArrayList<Point>();
-	
+
 	private Color paintColor = Color.BLUE;
 
 	private Client client;
-	
+	private DBHandler dbHandler = new DBHandler();
+
 	private JLabel currentColorText = new JLabel("Current color: ");
 	private JLabel currentPointSizeText = new JLabel("" + MIN_SLIDER);
 	private JLayeredPane drawPanel = new JLayeredPane();
@@ -41,10 +42,11 @@ public class DrawGUI extends JFrame {
 	private JPanel utilPanel = new JPanel();
 	private JPanel sizePanel = new JPanel();
 	private JPanel colorPanel = new JPanel();
-	
+	private JPanel clearPanel = new JPanel();
+
 	private JSlider sizeSlider = new JSlider(MIN_SLIDER, MAX_SLIDER, MIN_SLIDER);
 	private int size = sizeSlider.getValue();
-	
+
 	private JTextArea chatArea = new JTextArea();
 	private JTextField chatField = new JTextField();
 
@@ -53,24 +55,35 @@ public class DrawGUI extends JFrame {
 		this.userName = userName;
 		this.client = client;
 		this.getRootPane().setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.blue));
-		
+
 		add(utilPanel, BorderLayout.NORTH);
 		utilPanel.setLayout(new BorderLayout());
 		utilPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, UTIL_AREA_HEIGHT));
 		addColorArea();
 		addSizeArea();
-		
+		addClearArea();
+
 		addDrawArea();
-		
+
 		addChatArea();
 
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setResizable(false);
 		setLocationRelativeTo(null);
 		setVisible(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WinListener());
 	}
-	
+
+	// Clear area
+	private void addClearArea() {
+		JButton clearButton = new JButton("Clear");
+		utilPanel.add(clearPanel);
+		clearPanel.add(clearButton);
+		clearButton.addActionListener(new ClearListener());
+	}
+
+	// Size area
 	private void addSizeArea() {
 		utilPanel.add(sizePanel, BorderLayout.EAST);
 		sizePanel.add(currentPointSizeText);
@@ -80,9 +93,10 @@ public class DrawGUI extends JFrame {
 		sizePanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		sizePanel.add(sizeSlider);
 		sizeSlider.addChangeListener(new SlideListener());
-		
+
 	}
-	
+
+	// Color area
 	private void addColorArea() {
 		utilPanel.add(colorPanel, BorderLayout.WEST);
 		currentColorText.setText("Selected Color: " + getColorName(paintColor));
@@ -90,7 +104,8 @@ public class DrawGUI extends JFrame {
 		initColors();
 		handleButtons();
 	}
-	
+
+	// Draw area
 	private void addDrawArea() {
 		MouseListener me = new MouseListener();
 		drawPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
@@ -102,7 +117,8 @@ public class DrawGUI extends JFrame {
 		JScrollPane scroll = new JScrollPane(drawPanel);
 		this.add(scroll);
 	}
-	
+
+	// Chat area
 	private void addChatArea() {
 		chatPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, CHAT_PANEL_HEIGHT));
 		this.add(chatPanel, BorderLayout.SOUTH);
@@ -130,36 +146,36 @@ public class DrawGUI extends JFrame {
 		colors[11] = Color.WHITE;
 		colors[12] = Color.YELLOW;
 	}
-	
+
 	private String getColorName(Color color) {
-		if(color == Color.BLACK)
+		if (color == Color.BLACK)
 			return "Black";
-		else if(color == Color.BLUE)
+		else if (color == Color.BLUE)
 			return "Blue";
-		else if(color == Color.CYAN)
+		else if (color == Color.CYAN)
 			return "Cyan";
-		else if(color == Color.DARK_GRAY)
+		else if (color == Color.DARK_GRAY)
 			return "Dark Gray";
-		else if(color == Color.GRAY)
+		else if (color == Color.GRAY)
 			return "Gray";
-		else if(color == Color.GREEN)
+		else if (color == Color.GREEN)
 			return "Green";
-		else if(color == Color.LIGHT_GRAY)
+		else if (color == Color.LIGHT_GRAY)
 			return "Light Gray";
-		else if(color == Color.MAGENTA)
+		else if (color == Color.MAGENTA)
 			return "Magenta";
-		else if(color == Color.ORANGE)
+		else if (color == Color.ORANGE)
 			return "Orange";
-		else if(color == Color.PINK)
+		else if (color == Color.PINK)
 			return "Pink";
-		else if(color == Color.RED)
+		else if (color == Color.RED)
 			return "Red";
-		else if(color == Color.WHITE)
+		else if (color == Color.WHITE)
 			return "White";
-		else if(color == Color.YELLOW)
+		else if (color == Color.YELLOW)
 			return "Yellow";
 		else {
-			//Not implemented that color.
+			// Not implemented that color.
 			return "No such color";
 		}
 	}
@@ -177,11 +193,11 @@ public class DrawGUI extends JFrame {
 	private void initColorButton(int i) {
 		colorButtons[i] = new JButton();
 	}
-	
+
 	private void addButtonListener(int i) {
 		colorButtons[i].addActionListener(new ButtonListener());
 	}
-	
+
 	private void setButtonSize(int i) {
 		colorButtons[i].setPreferredSize(new Dimension(DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT));
 	}
@@ -197,19 +213,32 @@ public class DrawGUI extends JFrame {
 
 	public void drawPoint(Point point) {
 		PointComponent pointComp = new PointComponent(point.getX(), point.getY(), point.getColor(), point.getHeight());
-		if(drawPanel.getComponentAt(point.getX(), point.getY()) != null) {
+		if (drawPanel.getComponentAt(point.getX(), point.getY()) != null) {
 			drawPanel.add(pointComp, 1);
-		}
-		else
+		} else
 			drawPanel.add(pointComp, 0);
 		pointComp.repaint();
 		pointComp.validate();
 	}
-	
+
 	public void addChatMessage(String message) {
 		chatArea.append(message + "\n");
 	}
-	
+
+	public void clearScreen() {
+		drawPanel.removeAll();
+		repaint();
+		validate();
+	}
+
+	public class ClearListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent ae) {
+			client.sendClearArea();
+			clearScreen();
+		}
+	}
+
 	public class SlideListener implements ChangeListener {
 		@Override
 		public void stateChanged(ChangeEvent che) {
@@ -217,37 +246,37 @@ public class DrawGUI extends JFrame {
 			currentPointSizeText.setText("" + size);
 		}
 	}
-	
+
 	public class ButtonListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent ave) {
-			if(ave.getSource() instanceof JButton) {
-				JButton colorButton = (JButton)ave.getSource();
+			if (ave.getSource() instanceof JButton) {
+				JButton colorButton = (JButton) ave.getSource();
 				paintColor = colorButton.getBackground();
 				currentColorText.setText("Selected Color: " + getColorName(paintColor));
 			}
 		}
-		
+
 	}
-	
+
 	public class ChatListener extends KeyAdapter {
 		@Override
 		public void keyPressed(KeyEvent kev) {
-			if(kev.getKeyCode() == KeyEvent.VK_ENTER) {
+			if (kev.getKeyCode() == KeyEvent.VK_ENTER) {
 				String message = chatField.getText();
-				if(message.equals(""))
+				if (message.equals(""))
 					return;
 				else
 					message = userName + ": " + message;
-					
+
 				addChatMessage(message);
 				chatField.setText("");
 				client.sendMessage(message);
 			}
 		}
-		
+
 	}
-	
+
 	public class MouseListener extends MouseAdapter {
 
 		@Override
@@ -266,7 +295,7 @@ public class DrawGUI extends JFrame {
 			Point point = createPoint(me);
 			points.add(point);
 			try {
-				if(points.size() == MAX_DATA_SIZE) {
+				if (points.size() == MAX_DATA_SIZE) {
 					client.sendPoint(points);
 					points.clear();
 				}
@@ -274,7 +303,7 @@ public class DrawGUI extends JFrame {
 				e.printStackTrace();
 			}
 		}
-		
+
 		@Override
 		public void mouseReleased(MouseEvent me) {
 			try {
@@ -290,6 +319,19 @@ public class DrawGUI extends JFrame {
 			Point point = new Point(x, y, paintColor, size);
 			drawPoint(point);
 			return point;
+		}
+	}
+
+	public class WinListener extends WindowAdapter {
+		@Override
+		public void windowClosing(WindowEvent e) {
+			int confirm = JOptionPane.showOptionDialog(null, "Are you sure you wish to close the chat?",
+					"Exit Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+			if (confirm == 0) {
+				dbHandler.changeLogin(false, userName);
+				client.sendMessage(userName + " has left the chatroom.");
+				System.exit(0);
+			}
 		}
 	}
 

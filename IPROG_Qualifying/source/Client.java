@@ -53,19 +53,32 @@ public class Client {
 	}
 
 	public void addMessage(String message) {
-		if(message.startsWith(userName))
-			return;
+		if(message.contains(":")) {
+			int i = message.indexOf(":");
+			String sender = message.substring(0, i);
+			if(sender.equals(userName))
+				return;
+		}
 		gui.addChatMessage(message);
+	}
+	
+	public void clearScreenData(boolean clear) {
+		if(clear == true)
+			gui.clearScreen();
 	}
 
 	public void sendPoint(CopyOnWriteArrayList<Point> points) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(out);
 		oos.writeObject(points);
-		output.sendData(out.toByteArray());
+		output.sendData(false, out.toByteArray());
 	}
 
 	public void sendMessage(String message) {
-		output.sendData(message.getBytes());
+		output.sendData(false, message.getBytes());
+	}
+	
+	public void sendClearArea() {
+		output.sendData(true, null);
 	}
 }
