@@ -50,6 +50,13 @@ public class DrawGUI extends JFrame {
 	private JTextArea chatArea = new JTextArea();
 	private JTextField chatField = new JTextField();
 
+	/**
+	 * Constructs a new DrawGUI object that creates a new gui. Here a color area, size area,
+	 * clear button, draw area and chat area gets added.
+	 * 
+	 * @param userName specifies the name of the user, using this client.
+	 * @param client the client which this DrawGUI runs with.
+	 */
 	public DrawGUI(String userName, Client client) {
 		super(PROGRAM_NAME);
 		this.userName = userName;
@@ -76,6 +83,11 @@ public class DrawGUI extends JFrame {
 	}
 
 	// Clear area
+	/**
+	 * Adds a button to the utility panel, which allows for
+	 * completely clearing the draw area.
+	 * 
+	 */
 	private void addClearArea() {
 		JButton clearButton = new JButton("Clear");
 		utilPanel.add(clearPanel);
@@ -84,6 +96,11 @@ public class DrawGUI extends JFrame {
 	}
 
 	// Size area
+	/**
+	 * Adds a size slider to the utility panel which allows
+	 * for changing the size of the drawn point.
+	 * 
+	 */
 	private void addSizeArea() {
 		utilPanel.add(sizePanel, BorderLayout.EAST);
 		sizePanel.add(currentPointSizeText);
@@ -97,6 +114,9 @@ public class DrawGUI extends JFrame {
 	}
 
 	// Color area
+	/**
+	 * 
+	 */
 	private void addColorArea() {
 		utilPanel.add(colorPanel, BorderLayout.WEST);
 		currentColorText.setText("Selected Color: " + getColorName(paintColor));
