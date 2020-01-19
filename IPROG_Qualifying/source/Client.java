@@ -13,6 +13,15 @@ public class Client {
 	private OutputThread output = null;
 	private DrawGUI gui;
 
+	/**
+	 * Sets up the program, by starting off a socket connection
+	 * to the specified host-port combination, and setting up
+	 * inputthread and the gui.
+	 * 
+	 * 
+	 * @param host the host name to connect to.
+	 * @param port the host port to connect to.
+	 */
 	private void run(String host, int port) {
 		try (Socket socket = new Socket(host, port)) {
 			LoginWindow loginWindow = new LoginWindow();
@@ -47,11 +56,27 @@ public class Client {
 		new Client().run(host, port);
 	}
 
+	/**
+	 * Passes all points to the gui to be drawn.
+	 * 
+	 * @param points the list of points to be drawn on this
+	 * clients gui.
+	 */
 	public void convertData(CopyOnWriteArrayList<Point> points) {
 		for(Point point : points)
 			gui.drawPoint(point);
 	}
 
+	/**
+	 * Passes the message on to the gui, to be displayed
+	 * to this client.
+	 * <p>
+	 * Checks if the message retrieved is from this client,
+	 * and disregards it if it is.
+	 * 
+	 * @param message the text to be displayed to this
+	 * client.
+	 */
 	public void addMessage(String message) {
 		if(message.contains(":")) {
 			int i = message.indexOf(":");
@@ -62,11 +87,25 @@ public class Client {
 		gui.addChatMessage(message);
 	}
 	
+	/**
+	 * Passes the clear command to the gui if the
+	 * boolean command is true.
+	 * 
+	 * @param clear the boolean command to allow
+	 * complete clear of draw area.
+	 */
 	public void clearScreenData(boolean clear) {
 		if(clear == true)
 			gui.clearScreen();
 	}
 
+	/**
+	 * Sends all points to all connected clients, by first converting the points
+	 * to a byte array data.
+	 * 
+	 * @param points the list of points to be drawn on this
+	 * clients gui.
+	 */
 	public void sendPoint(CopyOnWriteArrayList<Point> points) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(out);
@@ -74,10 +113,22 @@ public class Client {
 		output.sendData(false, out.toByteArray());
 	}
 
+	/**
+	 * Sends the text to all connected clients by
+	 * passing it to a output thread.
+	 * 
+	 * @param message the text to be sent
+	 */
 	public void sendMessage(String message) {
 		output.sendData(false, message.getBytes());
 	}
 	
+	/**
+	 * Sends the command to clear
+	 * the draw area for all connected
+	 * clients.
+	 * 
+	 */
 	public void sendClearArea() {
 		output.sendData(true, null);
 	}

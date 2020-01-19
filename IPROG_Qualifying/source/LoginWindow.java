@@ -10,6 +10,11 @@ public class LoginWindow extends JFrame {
 
 	private DBHandler dbHandler = new DBHandler();
 	
+	/**
+	 * Constructs a new loginwindow object to be used
+	 * for login purposes.
+	 * 
+	 */
 	public LoginWindow() {
 		super("Login");
 		
@@ -35,6 +40,15 @@ public class LoginWindow extends JFrame {
 		this.loggedIn = loggedIn;
 	}
 	
+	/**
+	 * Fetches the username used for creation
+	 * of this user.
+	 * <p>
+	 * The username is taken from whichever method
+	 * was used for user creation.
+	 * 
+	 * @return the text consisting of a username.
+	 */
 	public String getUserName() {
 		String userName = null;
 		if(!lf.getUserName().equals(""))

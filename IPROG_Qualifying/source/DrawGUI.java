@@ -115,17 +115,25 @@ public class DrawGUI extends JFrame {
 
 	// Color area
 	/**
+	 * Adds a color bar that allows for changing the drawn points color.
 	 * 
 	 */
 	private void addColorArea() {
 		utilPanel.add(colorPanel, BorderLayout.WEST);
+		initColors();
 		currentColorText.setText("Selected Color: " + getColorName(paintColor));
 		utilPanel.add(currentColorText);
-		initColors();
 		handleButtons();
 	}
 
 	// Draw area
+	/**
+	 * Adds a draw area to this window, which allows for adding components in the
+	 * of points.
+	 * <p>
+	 * This draw area is added to a scroll, which allows for bigger draw areas.
+	 * 
+	 */
 	private void addDrawArea() {
 		MouseListener me = new MouseListener();
 		drawPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
@@ -139,6 +147,12 @@ public class DrawGUI extends JFrame {
 	}
 
 	// Chat area
+	/**
+	 * Adds a chat area to this window, which allows for sending text messages to
+	 * others connected to the connection.
+	 * <p>
+	 * The received messages are added to a chat area which displays all messages.
+	 */
 	private void addChatArea() {
 		chatPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, CHAT_PANEL_HEIGHT));
 		this.add(chatPanel, BorderLayout.SOUTH);
@@ -151,6 +165,11 @@ public class DrawGUI extends JFrame {
 		chatPanel.add(chatField);
 	}
 
+	/**
+	 * Adds all predefined colors from the
+	 * class {@link Color} to a data list
+	 * for easier access, for other methods.
+	 */
 	private void initColors() {
 		colors[0] = Color.BLACK;
 		colors[1] = Color.BLUE;
@@ -167,32 +186,42 @@ public class DrawGUI extends JFrame {
 		colors[12] = Color.YELLOW;
 	}
 
+	/**
+	 * Fetches the color name of the specified
+	 * color.
+	 * <p>
+	 * If the color exists a String representing
+	 * the color name is returned.
+	 * 
+	 * @param color the specified color.
+	 * @return the name of the color.
+	 */
 	private String getColorName(Color color) {
-		if (color == Color.BLACK)
+		if (color == colors[0])
 			return "Black";
-		else if (color == Color.BLUE)
+		else if (color == colors[1])
 			return "Blue";
-		else if (color == Color.CYAN)
+		else if (color == colors[2])
 			return "Cyan";
-		else if (color == Color.DARK_GRAY)
+		else if (color == colors[3])
 			return "Dark Gray";
-		else if (color == Color.GRAY)
+		else if (color == colors[4])
 			return "Gray";
-		else if (color == Color.GREEN)
+		else if (color == colors[5])
 			return "Green";
-		else if (color == Color.LIGHT_GRAY)
+		else if (color == colors[6])
 			return "Light Gray";
-		else if (color == Color.MAGENTA)
+		else if (color == colors[7])
 			return "Magenta";
-		else if (color == Color.ORANGE)
+		else if (color == colors[8])
 			return "Orange";
-		else if (color == Color.PINK)
+		else if (color == colors[9])
 			return "Pink";
-		else if (color == Color.RED)
+		else if (color == colors[10])
 			return "Red";
-		else if (color == Color.WHITE)
+		else if (color == colors[11])
 			return "White";
-		else if (color == Color.YELLOW)
+		else if (color == colors[12])
 			return "Yellow";
 		else {
 			// Not implemented that color.
@@ -200,6 +229,11 @@ public class DrawGUI extends JFrame {
 		}
 	}
 
+	/**
+	 * Creates the settings for the color buttons, which
+	 * the buttons are placed accordingly.
+	 * 
+	 */
 	private void handleButtons() {
 		for (int i = 0; i < colorButtons.length; i++) {
 			initColorButton(i);
@@ -210,27 +244,63 @@ public class DrawGUI extends JFrame {
 		}
 	}
 
+	/**
+	 * Creates a new color button to be 
+	 * placed.
+	 * 
+	 * @param i specifies the index.
+	 */
 	private void initColorButton(int i) {
 		colorButtons[i] = new JButton();
 	}
 
+	/**
+	 * Makes the the specified button intractable by adding a 
+	 * actionlistener.
+	 * 
+	 * @param i specifies the index.
+	 */
 	private void addButtonListener(int i) {
 		colorButtons[i].addActionListener(new ButtonListener());
 	}
 
+	/**
+	 * Changes the size of the specified button to be that of a default value.
+	 * 
+	 * @param i specifies the index.
+	 */
 	private void setButtonSize(int i) {
 		colorButtons[i].setPreferredSize(new Dimension(DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT));
 	}
 
+	/**
+	 * Changes the color of this specified button
+	 * to be the same of the colors list.
+	 * 
+	 * @param i specifies the index.
+	 */
 	private void setButtonColor(int i) {
 		colorButtons[i].setBackground(colors[i]);
 		colorButtons[i].setForeground(colors[i]);
 	}
 
+	/**
+	 * Adds the specified finished button
+	 * to a color and displayed to the user.
+	 * 
+	 * @param i specifies the index.
+	 */
 	private void addButtonToPanel(int i) {
 		colorPanel.add(colorButtons[i]);
 	}
 
+	/**
+	 * Adds this specific point to the draw area, by first converting it into a component.
+	 * <p>
+	 * if a component already exists on the given coordinates, this component is added over it.
+	 * 
+	 * @param point the specific point to be added.
+	 */
 	public void drawPoint(Point point) {
 		PointComponent pointComp = new PointComponent(point.getX(), point.getY(), point.getColor(), point.getHeight());
 		if (drawPanel.getComponentAt(point.getX(), point.getY()) != null) {
@@ -241,10 +311,21 @@ public class DrawGUI extends JFrame {
 		pointComp.validate();
 	}
 
+	/**
+	 * Prints out the text received from a user by 
+	 * adding it to the chat area.
+	 * 
+	 * @param message the text to be added.
+	 */
 	public void addChatMessage(String message) {
 		chatArea.append(message + "\n");
 	}
 
+	/**
+	 * Removes all components from
+	 * the draw area.
+	 * 
+	 */
 	public void clearScreen() {
 		drawPanel.removeAll();
 		repaint();
@@ -252,6 +333,12 @@ public class DrawGUI extends JFrame {
 	}
 
 	public class ClearListener implements ActionListener {
+		/**
+		 * Triggers an event which causes draw area to be cleared and sends the
+		 * clear command to other clients.
+		 * 
+		 * @param ae the triggered event which occurs when clearbutton is pushed.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			client.sendClearArea();
@@ -260,6 +347,13 @@ public class DrawGUI extends JFrame {
 	}
 
 	public class SlideListener implements ChangeListener {
+		/**
+		 * Triggers an event which causes the size of
+		 * the drawn point to be changed.
+		 * 
+		 * @param che the triggered event which occurs
+		 * when the size slider is changed.
+		 */
 		@Override
 		public void stateChanged(ChangeEvent che) {
 			size = sizeSlider.getValue();
@@ -268,6 +362,13 @@ public class DrawGUI extends JFrame {
 	}
 
 	public class ButtonListener implements ActionListener {
+		/**
+		 * Triggers an event which causes the color of
+		 * the drawn point to be changed.
+		 * 
+		 * @param ave the triggered event which occurs
+		 * when one of the color buttons are clicked.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent ave) {
 			if (ave.getSource() instanceof JButton) {
@@ -280,6 +381,13 @@ public class DrawGUI extends JFrame {
 	}
 
 	public class ChatListener extends KeyAdapter {
+		/**
+		 * Triggers an event which causes the typed text in
+		 * the chat area to be sent to all connected clients.
+		 * 
+		 * @param kev the triggered event which occurs
+		 * when the enter button is clicked.
+		 */
 		@Override
 		public void keyPressed(KeyEvent kev) {
 			if (kev.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -299,9 +407,19 @@ public class DrawGUI extends JFrame {
 
 	public class MouseListener extends MouseAdapter {
 
+		/**
+		 * Triggers an event which causes a point component
+		 * to be draw on the draw area, and sent to all
+		 * connected clients.
+		 * <p>
+		 * Send 1 point to all connected clients.
+		 * 
+		 * @param me the triggered event which occurs
+		 * when clicked on the draw area.
+		 */
 		@Override
 		public void mouseClicked(MouseEvent me) {
-			Point point = createPoint(me);
+			Point point = createPoint(me.getX(), me.getY());
 			points.add(point);
 			try {
 				client.sendPoint(points);
@@ -310,9 +428,20 @@ public class DrawGUI extends JFrame {
 			}
 		}
 
+		/**
+		 * Triggers an event which causes a point component
+		 * to be draw on the draw area, and sent to all
+		 * connected clients.
+		 * <p>
+		 * Sends a maximum specified amount of points
+		 * to all connected clients.
+		 * 
+		 * @param me the triggered event which occurs
+		 * when clicked on the draw area.
+		 */
 		@Override
 		public void mouseDragged(MouseEvent me) {
-			Point point = createPoint(me);
+			Point point = createPoint(me.getX(), me.getY());
 			points.add(point);
 			try {
 				if (points.size() == MAX_DATA_SIZE) {
@@ -324,6 +453,16 @@ public class DrawGUI extends JFrame {
 			}
 		}
 
+		/**
+		 * Triggers an event which causes a point component
+		 * to be draw on the draw area, and sent to all
+		 * connected clients.
+		 * <p>
+		 * The sent points equal to the current stored points.
+		 * 
+		 * @param me the triggered event which occurs
+		 * when clicked on the draw area.
+		 */
 		@Override
 		public void mouseReleased(MouseEvent me) {
 			try {
@@ -333,9 +472,15 @@ public class DrawGUI extends JFrame {
 			}
 		}
 
-		private Point createPoint(MouseEvent me) {
-			int x = me.getX();
-			int y = me.getY();
+		/**
+		 * Creates a new Point objects with the specified
+		 * coordinates.
+		 * 
+		 * @param x one of the coordinates on the draw area.
+		 * @param y one of the coordinates on the draw area.
+		 * @return the point.
+		 */
+		private Point createPoint(int x, int y) {
 			Point point = new Point(x, y, paintColor, size);
 			drawPoint(point);
 			return point;
@@ -343,6 +488,14 @@ public class DrawGUI extends JFrame {
 	}
 
 	public class WinListener extends WindowAdapter {
+		/**
+		 * Specified what the window should do when the close button is pressed.
+		 * <p>
+		 * A window dialog is brought up for options that asks if the user want to quit.
+		 * A message is sent to all connected clients that this client has disconnected and sets a logged off state
+		 * in the database.
+		 * 
+		 */
 		@Override
 		public void windowClosing(WindowEvent e) {
 			int confirm = JOptionPane.showOptionDialog(null, "Are you sure you wish to close the chat?",

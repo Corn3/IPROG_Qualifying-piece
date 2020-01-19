@@ -16,6 +16,19 @@ public class DBHandler {
 	private Connection dbConnection;
 	private Statement stmt = null;
 
+	/**
+	 * Checks if the specified name is available or not in the given database and returns the case if it exists
+	 * or not.
+	 * <p>
+	 * Attempts to start a connection with this database and if any error occurs, a exception will be caught.
+	 * 
+	 * 
+	 * @param checkOnly specifies if the database should only be checked for the name or if the name should be 
+	 * added aswell.
+	 * @param userName the name to be checked for and added if checkOnly is marked false.
+	 * @param userPassword the password to be added if checkOnly marked false.
+	 * @return if the name exists or not.
+	 */
 	public boolean checkAvailability(boolean checkOnly, String userName, String userPassword) {
 		try {
 			connectToDB();
@@ -30,10 +43,18 @@ public class DBHandler {
 		return exists;
 	}
 
+	/**
+	 * Checks if the specified password is correct for the given username.
+	 * <p>
+	 * If the username and password combo exists then true is returned, for all other cases false is returned.
+	 * 
+	 * @param userName the name to be checked for.
+	 * @param password the password to be checked for.
+	 * @return a boolean which indicates if the combination exists.
+	 */
 	public boolean checkPassword(String userName, String password) {
-		ResultSet rs;
 		try {
-			rs = (ResultSet) stmt.executeQuery(sqlHandler.checkForCorrectPassword(userName, password));
+			ResultSet rs = (ResultSet) stmt.executeQuery(sqlHandler.checkForCorrectPassword(userName, password));
 			if (rs.next())
 				return true;
 			else
@@ -91,6 +112,15 @@ public class DBHandler {
 		stmt = (Statement) dbConnection.createStatement();
 	}
 
+	/**
+	 * Pushes the name and password combination together with a new unique ID to the database
+	 * for adding.
+	 * <p>
+	 * If an error occurs a SQLException is caught and none of the data is added.
+	 * 
+	 * @param userName the name to be added.
+	 * @param userPassword the password to be added.
+	 */
 	private void addEntryToDB(String userName, String userPassword) {
 		try {
 			stmt.executeUpdate(sqlHandler.insertIntoDB(userName, userPassword, getNewId()));
@@ -100,6 +130,16 @@ public class DBHandler {
 
 	}
 
+	/**
+	 * Checks for the existant of the specified user, by calling an sql query to determine the
+	 * name's existant in the database.
+	 * <p>
+	 * If an error occurs this method returns false or if the user didn't exist. If the user exists
+	 * this method returns true.
+	 * 
+	 * @param userName the name to be checked for.
+	 * @return a boolean value to indicate if the name exists.
+	 */
 	private boolean checkEntryFromDB(String userName) {
 		try {
 			ResultSet rs = (ResultSet) stmt.executeQuery(sqlHandler.checkForUserName(userName));
@@ -115,6 +155,15 @@ public class DBHandler {
 
 	}
 
+	/**
+	 * Sets the login of this user to the given value.
+	 * <p>
+	 * If this is a new instance this class, then this method connects to the
+	 * database, which might cause an error and an exception will be caught.
+	 * 
+	 * @param loggedIn the status of the user to be changed to.
+	 * @param userName the username to have its status changed.
+	 */
 	public void changeLogin(boolean loggedIn, String userName) {
 		try {
 			if (stmt == null)
