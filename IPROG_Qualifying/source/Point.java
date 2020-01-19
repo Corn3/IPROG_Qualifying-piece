@@ -1,6 +1,14 @@
 import java.awt.Color;
 import java.io.Serializable;
-
+/**
+ * Base class used for transferring data to other clients.
+ * <p>
+ * Can be seen as abit redundant with "PointComponent", but
+ * was required to be used when sending data accross the socket.
+ * 
+ * @author Robin
+ *
+ */
 public class Point implements Serializable {
 	
 	private static final int DEFAULT_SIZE = 10;

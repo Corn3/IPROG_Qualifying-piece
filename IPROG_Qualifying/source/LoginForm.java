@@ -14,6 +14,17 @@ public class LoginForm extends JPanel {
 	private boolean exists = false;
 	private LoginWindow loginWindow;
 
+	/**
+	 * Constructs a panel used for the login window.
+	 * <p>
+	 * Adds a username part, a password part and 2 buttons for 
+	 * logging in and swithing to the UserForm.
+	 * 
+	 * @param cards the panel that holds this panel form together with
+	 * UserForm.
+	 * @param loginWindow the window to hold this Class together with 
+	 * UserForm.
+	 */
 	public LoginForm(JPanel cards, LoginWindow loginWindow) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.cards = cards;
@@ -49,6 +60,13 @@ public class LoginForm extends JPanel {
 	}
 
 	private class NextListener implements ActionListener {
+		/**
+		 * Triggers an event which causes any written fields in
+		 * this form to be reset and then switches to the UserForm.
+		 * 
+		 * @param ae the triggered event which occurs when the
+		 * "New user" button is clicked.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			userField.setText("");
@@ -59,6 +77,16 @@ public class LoginForm extends JPanel {
 	}
 
 	private class LoginListener implements ActionListener {
+		/**
+		 * Triggers an event which causes the specified textfields to be converted into a username and password.
+		 * <p>
+		 * If either the username or password is empty an error message is displayed.
+		 * If not then the availability for this given information is checked and logs the user in if the information was
+		 * correct.
+		 * 
+		 * @param ae the triggered event which occurs when the
+		 * "Login" button is clicked.
+		 */
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			String name = userField.getText();
