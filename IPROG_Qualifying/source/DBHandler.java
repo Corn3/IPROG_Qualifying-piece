@@ -6,11 +6,11 @@ import com.mysql.jdbc.ResultSet;
 import com.mysql.jdbc.Statement;
 
 public class DBHandler {
-
-	private static final String DEFAULT_DB = "db_19762992";
-	private static final String DEFAULT_COMPUTER = "atlas.dsv.su.se";
-	private static final String USR_NAME = "usr_19762992";
-	private static final String USR_PWD = "762992";
+	//Add database settings here.
+	private static final String DEFAULT_DB = "";
+	private static final String DEFAULT_COMPUTER = "";
+	private static final String USR_NAME = "";
+	private static final String USR_PWD = "";
 
 	private SQLHandler sqlHandler = new SQLHandler();
 	private Connection dbConnection;
