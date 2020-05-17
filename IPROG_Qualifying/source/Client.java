@@ -5,8 +5,8 @@ import java.net.Socket;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Client {
-	private static final String DEFAULT_HOST = "atlas.dsv.su.se";
-	private static final int DEFAULT_PORT = 4848;
+	private static final String DEFAULT_HOST = ""; // Change this to a host name.
+	private static final int DEFAULT_PORT = 0; // Change this to a port number.
 	
 	private String userName = "";
 	
