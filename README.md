@@ -1,1 +1,1 @@
-"# IPROG_Qualifying-piece" 
+A little chat and draw program made in Java.
